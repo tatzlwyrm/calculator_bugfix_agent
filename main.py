@@ -1,6 +1,12 @@
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
+import argparse
+
+parser = argparse.ArgumentParser(description="Chatbot")
+parser.add_argument("user_prompt", type=str, help="User prompt")
+args = parser.parse_args()
+# Now we can access `args.user_prompt`
 
 # Load .env variables such as the API key secret. 
 # Be sure .env is in .gitignore. 
@@ -16,7 +22,7 @@ client = OpenAI(
 )
 
 # User prompt or question. 
-user_prompt = input("Question or prompt: ") + " Limit the response to one paragraph."
+#user_prompt = input("Question or prompt: ") + " Limit the response to one paragraph."
 #"What is the calendar window over which you have reliable information? What can you tell me about the Boot.dev course release schedule? Answer in one paragraph only. "
 
 # Get a response from the model, which will be at response.choices[0].message.content . 
@@ -25,7 +31,7 @@ response = client.chat.completions.create(
     messages=[
         {
             "role": "user",
-            "content": user_prompt,
+            "content": args.user_prompt,
             #"What are the easiest ways to supplement the Boot.dev AI engineering courses? Use one paragraph maximum."
             #"What highly-anticipated and useful (non-meme) crypto projects are entering mainnet or issuing airdrops in November 2026? Use one paragraph maximum.",
         }
@@ -38,7 +44,7 @@ if response.usage == None:
 
 # Define main function. 
 def main():
-    print(f"User prompt: {user_prompt}")
+    print(f"User prompt: {args.user_prompt}")
     print(f"Prompt tokens: {response.usage.prompt_tokens}")
     print(f"Response tokens: {response.usage.completion_tokens}")
     print(f"Response: {response.choices[0].message.content}")
