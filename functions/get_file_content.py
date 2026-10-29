@@ -1,10 +1,6 @@
 import os
 from config import MAX_CHARS
 
-def quoz() -> None:
-    """ Quoz!! """
-    print("What a shocking bad hat!")
-
 def get_file_content(working_directory: str, file_path: str) -> str:
     # First, validate directory permission.
     try:
@@ -12,7 +8,7 @@ def get_file_content(working_directory: str, file_path: str) -> str:
         target_dir = os.path.normpath(os.path.join(abs_work_path, file_path))
     except:
         return "Error: os.path call returned error."
-    print(target_dir)
+    #print(target_dir)
     valid_target_dir = os.path.commonpath([abs_work_path, target_dir]) == abs_work_path
     if not valid_target_dir:
         return f'Error: Cannot list "{file_path}" as it is outside the permitted working directory'
