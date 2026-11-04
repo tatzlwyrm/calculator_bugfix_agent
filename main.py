@@ -4,6 +4,8 @@ from openai import OpenAI
 import argparse
 from prompts import system_prompt
 from config import TEMPERATURE
+import json
+from call_function import available_functions
 
 # Interpret command-line string argument as the user prompt.
 parser = argparse.ArgumentParser(description="Chatbot")
@@ -38,7 +40,10 @@ response = client.chat.completions.create(
     model="openrouter/free",
     messages=session_messages,
     temperature=TEMPERATURE,
+    tools=available_functions,
 )
+
+message = response.choices[0].message
 
 # Verify lack of API response.
 if response.usage == None:
@@ -51,7 +56,14 @@ def main():
         print(f"User prompt: {args.user_prompt}")
         print(f"Prompt tokens: {response.usage.prompt_tokens}")
         print(f"Response tokens: {response.usage.completion_tokens}")
-    print(f"Response: {response.choices[0].message.content}")
+
+    if message.tool_calls != None:
+        print(f"Message Tool Calls: True")
+        for tool_call in message.tool_calls:
+            function_args = json.loads(tool_call.function.arguments or "{}")
+            print(f"Calling function: {tool_call.function.name}({function_args})")
+    else:
+        print(f"Response: {response.choices[0].message.content}")
 
 # Run main function if file is not loaded as a library.
 if __name__ == "__main__":
