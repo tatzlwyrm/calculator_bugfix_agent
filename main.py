@@ -5,7 +5,10 @@ import argparse
 from prompts import system_prompt
 from config import TEMPERATURE
 import json
-from call_function import available_functions
+from call_function import available_functions, call_function
+#n
+
+
 
 # Interpret command-line string argument as the user prompt.
 parser = argparse.ArgumentParser(description="Chatbot")
@@ -61,7 +64,14 @@ def main():
         print(f"Message Tool Calls: True")
         for tool_call in message.tool_calls:
             function_args = json.loads(tool_call.function.arguments or "{}")
-            print(f"Calling function: {tool_call.function.name}({function_args})")
+            print(f"Function arguments: {function_args}")
+            result_message = call_function(tool_call, args.verbose)
+            if result_message['content'] == None:
+                raise Exception("Error: tool message content is None.")
+            print(f"Result message: {result_message}")
+            if args.verbose:
+                print(f"-> {result_message['content']}")
+            #print(f"Calling function: {tool_call.function.name}({function_args})")
     else:
         print(f"Response: {response.choices[0].message.content}")
 
