@@ -1,0 +1,1 @@
+ma pi telo suli: ma ni li suli mute li pona.
